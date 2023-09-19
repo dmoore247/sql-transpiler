@@ -9,9 +9,7 @@ setup(
     author="Douglas Moore",
     author_email="douglas.moore@databricks.com",
     license="Apache 2",
-    packages=find_packages(
-        include=["databricks-sdk", "databricks-connect"]
-    ),
+    packages=find_packages(include=["databricks-sdk", "databricks-connect"]),
     package_data={"ucrolehelper": ["py.typed"]},
     use_scm_version={
         "write_to": "version.py",
@@ -19,7 +17,7 @@ setup(
         "local_scheme": "no-local-version",
     },
     setup_requires=["setuptools_scm"],
-    install_requires=["sqlglot","databricks-connect"],
+    install_requires=["sqlglot", "databricks-connect"],
     extras_require={
         "dev": [
             "autoflake",

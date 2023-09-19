@@ -37,7 +37,8 @@ class ParseResult:
                 strategy STRING, 
                 error_class STRING, 
                 exception STRING, 
-                context STRING"""
+                context STRING,
+                sqlglot STRING"""
 
     def record(self):
         return {
@@ -119,7 +120,7 @@ class Statement:
      
     def transpile(self):
         if not self.write_sql and self.get_ast():
-            self.write_sql = self.get_ast().sql(dialect=self.write)
+            self.write_sql = sqlglot.transpile(self.sql, read=self.dialect, write=self.write)[0]
         return self.write_sql
     
     def classify_statement(self):

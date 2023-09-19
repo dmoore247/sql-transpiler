@@ -189,26 +189,67 @@ set nocount on''')
         self.assertTrue("PARSE_SYNTAX_ERROR" in s.result().record()['exception'])
 
     def test_unresolved_function(self):
-            s = Statement('''SELECT isnull(nullif(common.dbo.RegexReplace(prescriber_zip, '[^\d]', ''), ''), 'Unknown') as zip FROM common.dbo.mytable s''')
-            self.assertIsNotNone(s.parse())
-            self.assertIsNone(s.error())
-            self.assertIsNotNone(s.result())
-            self.assertEqual(s.result().error_class, None)
-            self.assertIsNotNone(s.result().sql)
-            self.assertIsNone(s.result().target_sql)
-            self.assertEqual(s.result().exception, None)
-            s.classify_statement()
-            plan = s.validate()
-            self.assertEqual('SELECT',s.statement_type)
-            self.assertEqual('translate function',s.strategy)
-            self.assertIsNone(plan)
-            self.assertEqual(s.exception_context, 'validate')
-            self.assertEqual(s.error_class, 'UNRESOLVED_ROUTINE')
-            self.assertIsNotNone(s.error())
-            self.assertIsNotNone(s.exception)
-            self.assertIsNotNone(s.result())
-            self.assertTrue("UNRESOLVED_ROUTINE" in str(s.result().exception))
-            self.assertTrue("UNRESOLVED_ROUTINE" in s.result().record()['exception'])
+        s = Statement('''SELECT isnull(nullif(common.dbo.RegexReplace(prescriber_zip, '[^\d]', ''), ''), 'Unknown') as zip FROM common.dbo.mytable s''')
+        self.assertIsNotNone(s.parse())
+        self.assertIsNone(s.error())
+        self.assertIsNotNone(s.result())
+        self.assertEqual(s.result().error_class, None)
+        self.assertIsNotNone(s.result().sql)
+        self.assertIsNone(s.result().target_sql)
+        self.assertEqual(s.result().exception, None)
+        s.classify_statement()
+        plan = s.validate()
+        self.assertEqual('SELECT',s.statement_type)
+        self.assertEqual('translate function',s.strategy)
+        self.assertIsNone(plan)
+        self.assertEqual(s.exception_context, 'validate')
+        self.assertEqual(s.error_class, 'UNRESOLVED_ROUTINE')
+        self.assertIsNotNone(s.error())
+        self.assertIsNotNone(s.exception)
+        self.assertIsNotNone(s.result())
+        self.assertTrue("UNRESOLVED_ROUTINE" in str(s.result().exception))
+        self.assertTrue("UNRESOLVED_ROUTINE" in s.result().record()['exception'])
+            
+    def test_create_1(self):
+        sql = '''CREATE TABLE [dbo].[T_Users](
+	[id] [int] IDENTITY(1,1) NOT FOR REPLICATION NOT NULL,
+ CONSTRAINT [PK_T_Users] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]'''
+
+        self.assertTrue("ASC" in sql)
+
+        s = Statement(sql)
+        self.assertIsNotNone(s.parse())
+        self.assertIsNone(s.error())
+        s.transpile()
+        self.assertIsNotNone(s.result())
+        self.assertEqual(s.result().error_class, None)
+        self.assertIsNotNone(s.result().sql)
+        self.assertIsNotNone(s.result().target_sql)
+        
+        target_sql = s.result().target_sql
+        self.assertFalse("ASC" in target_sql, target_sql)
+        self.assertFalse("CLUSTERED" in target_sql, target_sql)
+        self.assertFalse("[PRIMARY]" in target_sql, target_sql)
+        
+        self.assertEqual(s.result().exception, None)
+        s.classify_statement()
+        plan = s.validate()
+        self.assertEqual('CREATE TABLE',s.statement_type)
+        self.assertEqual('transpile',s.strategy)
+        self.assertIsNone(plan)
+        self.assertEqual(s.exception_context, 'validate')
+        self.assertEqual(s.error_class, 'PARSE_SYNTAX_ERROR')
+        self.assertIsNotNone(s.error())
+        self.assertIsNotNone(s.exception)
+        self.assertIsNotNone(s.result())
+        self.assertTrue("PARSE_SYNTAX_ERROR" in str(s.result().exception))
+        self.assertTrue("PARSE_SYNTAX_ERROR" in s.result().record()['exception'])
+        
+            
 
 if __name__ == '__main__':
     import logging

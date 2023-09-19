@@ -1,5 +1,6 @@
 # sql-transpiler
-SQLGlot based transpiler control and evaulation framework
+SQLGlot based transpiler control and evaulation framework.
+The config defaults to source = tsql, target = databricks
 
 ## Setup
 
@@ -7,11 +8,19 @@ SQLGlot based transpiler control and evaulation framework
 git clone ....
 mkdir resources
 <copy your sql files into resources folder>
+
+#setup dev environment
+make install-dev
 ```
 
-## Testing
+## Unit Testing
 ```bash
-python -m unittest test_*.py
+make test
+```
+
+## Before commit
+```bash
+make check
 ```
 
 ## Usage

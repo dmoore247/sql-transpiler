@@ -116,7 +116,7 @@ class TestStatement(unittest.TestCase):
         self.assertTrue("INVALID_SET_SYNTAX" in str(s.result().exception))
         self.assertTrue("INVALID_SET_SYNTAX" in s.result().record()['exception'])
         self.assertEqual('SET',s.statement_type)
-        self.assertEqual('ignore',s.strategy)
+        self.assertEqual('skip',s.strategy)
         
     def test_truncate_statement(self):
         s = Statement('truncate table common..t_reporting_table')

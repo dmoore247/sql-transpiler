@@ -26,6 +26,7 @@ class ParseResult:
     error_class:str
     exception:str
     context:str
+    sqlglot_version:str
     def schema(self):
         return """file_path STRING, 
                 sql STRING, 
@@ -49,7 +50,8 @@ class ParseResult:
             "strategy": self.strategy,              # migration strategy
             "error_class": self.error_class,        # python class used in exception/error
             "exception": self.exception if self.exception is None else self.exception.__repr__(),       # serialized exception object
-            "context": self.context                 # context of exception (e.g. table)
+            "context": self.context,                # context of exception (e.g. table)
+            "sqlglot": self.sqlglot_version,        # library version
         }
 
 
@@ -69,6 +71,7 @@ class Statement:
         self.write_sql = None
         self.error_class = None
         self.context = None
+        self.sqlglot_version = sqlglot.__version__
     
     def result(self) -> ParseResult:
         """Return result of parse/transpiling/validation operations
@@ -86,7 +89,8 @@ class Statement:
             strategy = self.strategy,
             error_class = self.error_class,
             exception = self.exception,
-            context = self.context
+            context = self.context,
+            sqlglot_version = self.sqlglot_version
         )
 
     def error(self):

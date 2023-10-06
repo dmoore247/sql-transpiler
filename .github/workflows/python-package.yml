@@ -24,4 +24,5 @@ jobs:
     - name: Run checks (linter, code style, tests)
       run: make check
       env:
-          DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
+      	DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
+	DATABRICKS_HOST: ${{ secrets.SP_HOST }}

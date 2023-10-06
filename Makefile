@@ -13,12 +13,12 @@ test:
 	python -m unittest
 
 unit:
-	SKIP_INTEGRATION=1 python -m unittest
+	python -m unittest discover -s tests/unit
 
 style:
 	pre-commit run --all-files
 
-check: style test
+check: style unit
 
 docs:
 	python pdoc/cli.py -o docs

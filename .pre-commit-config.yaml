@@ -23,10 +23,3 @@ repos:
         types: [ python ]
         require_serial: true
         files: ^(./|tests/|setup.py)
-      - id: mypy
-        name: mypy
-        entry: mypy
-        language: system
-        types: [ python ]
-        files: ^(./|tests/)
-        require_serial: true

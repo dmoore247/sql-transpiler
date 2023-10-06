@@ -57,22 +57,21 @@ class ParseResult:
 
 
 class Statement:
-    def __init__(self, sql:str, file_path:str=None, dialect:str = "tsql", error_level=sqlglot.ErrorLevel.RAISE):
+    def __init__(self, sql:str, file_path=None, dialect:str = "tsql", error_level=sqlglot.ErrorLevel.RAISE):
         self.sql = sql
         self.dialect = dialect
         self.file_path = file_path
         self.error_level = error_level
+        self.write = "databricks"
+        self.sqlglot_version = sqlglot.__version__
+        self.strategy = None
         self.exception = None
-        self.exception_context = None
-        self.ast:exp.Expression = None
         self.plan = None
         self.statement_type = None
-        self.strategy = None
-        self.write = "databricks"
-        self.write_sql = None
         self.error_class = None
         self.context = None
-        self.sqlglot_version = sqlglot.__version__
+        self.write_sql = None
+        self.ast = None
     
     def result(self) -> ParseResult:
         """Return result of parse/transpiling/validation operations
@@ -85,7 +84,7 @@ class Statement:
             sql = self.sql,
             target_sql = self.write_sql,
             ast = self.ast.__repr__(),
-            plan = self.plan,
+            plan = str(self.plan),
             statement_type = self.statement_type,
             strategy = self.strategy,
             error_class = self.error_class,
@@ -162,7 +161,7 @@ class Statement:
         return self.statement_type, self.strategy
 
     def handle_exception(self, context:str, sql:str, e:Exception):
-        self.exception = e
+        self.exception = str(e)
         self.exception_context = context
         self.error_class = str(e.__class__.__name__)
 
@@ -196,9 +195,8 @@ class Statement:
             if object_search:
                 self.context = object_search.group(1)
                 self.strategy = f"Create {self.context} first"
-
-        self.exception = str(self.plan.split('AnalysisException:')[1:])
-        self.plan = None
+        if self.plan:
+            self.exception = str(self.plan.split('AnalysisException:')[1:])
 
     def validate(self) -> str:
         """

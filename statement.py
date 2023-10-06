@@ -10,7 +10,6 @@ import logging
 logger = logging.getLogger('SQLTranspile')
 
 from databricks.connect import DatabricksSession
-spark = DatabricksSession.builder.getOrCreate()
 
 from dataclasses import dataclass
 
@@ -206,6 +205,7 @@ class Statement:
             sql = self.transpile()
             if sql:
                 logger.debug("explain COST " + sql)
+                spark = DatabricksSession.builder.getOrCreate()
                 self.plan = spark.sql("explain COST " + sql).collect()[0][0]
                 if "AnalysisException" in self.plan:
                     self.parse_analysis_exception(self.plan)

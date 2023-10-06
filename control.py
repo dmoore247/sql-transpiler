@@ -12,7 +12,6 @@ logger = logging.getLogger('SQLTranspile')
 from statement import Statement, ParseResult
 
 from databricks.connect import DatabricksSession
-spark = DatabricksSession.builder.getOrCreate()
 
 
 class ParseControler:
@@ -31,6 +30,7 @@ class ParseControler:
     def drop(self):
         if self.overwrite:
             logger.debug(f'DROP TABLE IF EXISTS {self.table_name}')
+            spark = DatabricksSession.builder.getOrCreate()
             spark.sql(f'DROP TABLE IF EXISTS {self.table_name}')
 
     def save_results(self, results:list):
@@ -38,6 +38,7 @@ class ParseControler:
         logger.info(f"Saving {len(results)} results to {self.table_name}")
         r = [result.record() for result in results]
         schema = results[0].schema()
+        spark = DatabricksSession.builder.getOrCreate()
         df = spark.createDataFrame(r, schema).withColumn('insert_dt',expr('now()'))
         mode = 'append'
         

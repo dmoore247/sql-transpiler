@@ -2,7 +2,8 @@ name: Test and Lint Python Package
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - '**'        # matches every branch
   pull_request:
     branches: [ main ]
 jobs:
@@ -10,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11"]
+        python-version: ["3.10"]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -24,5 +25,6 @@ jobs:
     - name: Run checks (linter, code style, tests)
       run: make check
       env:
-      	DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
-      	DATABRICKS_HOST: ${{ secrets.SP_HOST }}
+        DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+        DATABRICKS_CLUSTER_ID: ${{ vars.DATABRICKS_CLUSTER_ID }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}

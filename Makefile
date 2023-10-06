@@ -13,7 +13,7 @@ test:
 	python -m unittest
 
 unit:
-	python -m unittest discover -s tests/unit
+	pwd && python -m unittest discover -s tests/unit
 
 style:
 	pre-commit run --all-files

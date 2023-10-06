@@ -21,7 +21,7 @@ class ParseControler:
         This class runs the sqlglot parser/transpiler over all the statements in all the files. 
         The results are logged to a delta table.
     """
-    def __init__(self, table_name:str, validate=True, save=False, overwrite=False, read="tsql"):
+    def __init__(self, table_name:str = "main.sqlglot.project1", validate=True, save=False, overwrite=False, read="tsql"):
         self.table_name = table_name
         self.validate = validate
         self.read = read

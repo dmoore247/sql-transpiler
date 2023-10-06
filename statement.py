@@ -26,6 +26,7 @@ class ParseResult:
     error_class:str
     exception:str
     context:str
+    sqlglot_version:str
     def schema(self):
         return """file_path STRING, 
                 sql STRING, 
@@ -36,7 +37,8 @@ class ParseResult:
                 strategy STRING, 
                 error_class STRING, 
                 exception STRING, 
-                context STRING"""
+                context STRING,
+                sqlglot STRING"""
 
     def record(self):
         return {
@@ -49,26 +51,27 @@ class ParseResult:
             "strategy": self.strategy,              # migration strategy
             "error_class": self.error_class,        # python class used in exception/error
             "exception": self.exception if self.exception is None else self.exception.__repr__(),       # serialized exception object
-            "context": self.context                 # context of exception (e.g. table)
+            "context": self.context,                # context of exception (e.g. table)
+            "sqlglot": self.sqlglot_version,        # library version
         }
 
 
 class Statement:
-    def __init__(self, sql:str, file_path:str=None, dialect:str = "tsql", error_level=sqlglot.ErrorLevel.RAISE):
+    def __init__(self, sql:str, file_path=None, dialect:str = "tsql", error_level=sqlglot.ErrorLevel.RAISE):
         self.sql = sql
         self.dialect = dialect
         self.file_path = file_path
         self.error_level = error_level
+        self.write = "databricks"
+        self.sqlglot_version = sqlglot.__version__
+        self.strategy = None
         self.exception = None
-        self.exception_context = None
-        self.ast:exp.Expression = None
         self.plan = None
         self.statement_type = None
-        self.strategy = None
-        self.write = "databricks"
-        self.write_sql = None
         self.error_class = None
         self.context = None
+        self.write_sql = None
+        self.ast = None
     
     def result(self) -> ParseResult:
         """Return result of parse/transpiling/validation operations
@@ -81,12 +84,13 @@ class Statement:
             sql = self.sql,
             target_sql = self.write_sql,
             ast = self.ast.__repr__(),
-            plan = self.plan,
+            plan = str(self.plan),
             statement_type = self.statement_type,
             strategy = self.strategy,
             error_class = self.error_class,
             exception = self.exception,
-            context = self.context
+            context = self.context,
+            sqlglot_version = self.sqlglot_version
         )
 
     def error(self):
@@ -115,7 +119,7 @@ class Statement:
      
     def transpile(self):
         if not self.write_sql and self.get_ast():
-            self.write_sql = self.get_ast().sql(dialect=self.write)
+            self.write_sql = sqlglot.transpile(self.sql, read=self.dialect, write=self.write)[0]
         return self.write_sql
     
     def classify_statement(self):
@@ -157,7 +161,7 @@ class Statement:
         return self.statement_type, self.strategy
 
     def handle_exception(self, context:str, sql:str, e:Exception):
-        self.exception = e
+        self.exception = str(e)
         self.exception_context = context
         self.error_class = str(e.__class__.__name__)
 
@@ -191,9 +195,8 @@ class Statement:
             if object_search:
                 self.context = object_search.group(1)
                 self.strategy = f"Create {self.context} first"
-
-        self.exception = str(self.plan.split('AnalysisException:')[1:])
-        self.plan = None
+        if self.plan:
+            self.exception = str(self.plan.split('AnalysisException:')[1:])
 
     def validate(self) -> str:
         """

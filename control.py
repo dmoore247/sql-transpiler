@@ -110,5 +110,5 @@ if __name__ == "__main__":
     logger.setLevel(level=logging.DEBUG)
     logger.info("Running")
     c = ParseControler(table_name="douglas_moore.sqlglot.project1", validate=True, save=True, overwrite=True)
-    c.run_all("resources/*.sql")
+    c.run_all("./resources/*.sql")
     logger.info("Complete")

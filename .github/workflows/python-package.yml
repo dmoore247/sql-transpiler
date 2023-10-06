@@ -2,7 +2,8 @@ name: Test and Lint Python Package
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - '**'        # matches every branch
   pull_request:
     branches: [ main ]
 jobs:

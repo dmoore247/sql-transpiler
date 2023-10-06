@@ -24,7 +24,6 @@ jobs:
         make install-dev
     - name: Run checks (linter, code style, tests)
       run: make check
-      working-directory: .
       env:
         DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
         DATABRICKS_CLUSTER_ID: ${{ vars.DATABRICKS_CLUSTER_ID }}

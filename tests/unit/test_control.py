@@ -16,7 +16,7 @@ class TestStatement(unittest.TestCase):
 
     def test_tsql_split(self):
         c = ParseControler(validate=False, save=False)
-        with open("resources/p_reporting_user.sql", "r") as f:
+        with open("../../resources/p_reporting_user.sql", "r") as f:
             sql_blob = f.read()
         for statement in c.run_tsql(sql_blob):
             logging.info(statement)

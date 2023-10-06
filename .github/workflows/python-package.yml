@@ -23,6 +23,7 @@ jobs:
         make install-dev
     - name: Run checks (linter, code style, tests)
       run: make check
+      working-directory: .
       env:
-	DATABRICKS_HOST: ${{ secrets.SP_HOST }}
-	DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
+        DATABRICKS_HOST: ${{ secrets.SP_HOST }}
+        DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}

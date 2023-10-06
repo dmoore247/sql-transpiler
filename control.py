@@ -12,7 +12,7 @@ logger = logging.getLogger('SQLTranspile')
 from statement import Statement, ParseResult
 
 from databricks.connect import DatabricksSession
-spark = DatabricksSession.builder.profile('E2DEMO').getOrCreate()
+spark = DatabricksSession.builder.getOrCreate()
 
 
 class ParseControler:

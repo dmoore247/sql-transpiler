@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger('SQLTranspile')
 
 from databricks.connect import DatabricksSession
-spark = DatabricksSession.builder.profile('E2DEMO').getOrCreate()
+spark = DatabricksSession.builder.getOrCreate()
 
 from dataclasses import dataclass
 

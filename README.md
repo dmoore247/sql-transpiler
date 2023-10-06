@@ -25,6 +25,6 @@ make check
 
 ## Usage
 ```bash
-pip install sqlglot
+make install
 python3 control.py
 ```

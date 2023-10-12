@@ -28,3 +28,6 @@ make check
 make install
 python3 control.py
 ```
+
+## More Resources
+https://github.com/tobymao/sqlglot

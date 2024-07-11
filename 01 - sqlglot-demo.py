@@ -89,6 +89,16 @@ sqls
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC use catalog douglas_moore;
+# MAGIC CREATE OR REPLACE TABLE `dbo`.`table1` (id INT, a CHAR(10), b TIMESTAMP)
+
+# COMMAND ----------
+
+# MAGIC %sql describe extended douglas_moore.`dbo`.`table1`
+
+# COMMAND ----------
+
 # MAGIC %sql USE CATALOG douglas_moore;
 
 # COMMAND ----------

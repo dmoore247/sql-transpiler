@@ -108,10 +108,6 @@
 
 # COMMAND ----------
 
-1.0 - (35-17)/(110+8+35+1)
-
-# COMMAND ----------
-
 # MAGIC %sql
 # MAGIC WITH parse_classes AS (
 # MAGIC SELECT 
